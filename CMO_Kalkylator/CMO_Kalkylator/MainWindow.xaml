@@ -126,6 +126,7 @@
 
                         <Button Content="Рассчитать" Height="34" Margin="0,8,0,0" FontWeight="SemiBold"
                                 IsDefault="True" Click="Calculate_Click" Background="#FFF6AEAE"/>
+                        <Button x:Name="ExportButton" Content="Экспорт в Excel" Height="34" Margin="0,6,0,0" IsEnabled="False" Click="Export_Click" Background="#FFF6AEAE"/>
                     </StackPanel>
                 </GroupBox>
 

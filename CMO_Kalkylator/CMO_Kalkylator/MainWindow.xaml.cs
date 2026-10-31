@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.Win32;
+using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq;
@@ -16,20 +17,20 @@ using System.Windows.Shapes;
 
 namespace CMO_Kalkylator
 {
-    /// <summary>
-    /// Логика взаимодействия для MainWindow.xaml
-    /// </summary>
     public partial class MainWindow : Window
     {
         private static readonly CultureInfo Ru = new CultureInfo("ru-RU");
         private readonly List<MenuItem> _menuItems = new List<MenuItem>();
 
+        // последний выполненный расчёт — его выгружаем в Excel
+        private ExportData _last;
+
         public MainWindow()
         {
             InitializeComponent();
 
-            // Заполняем и выпадающий список, и главное меню одним и тем же набором типов СМО
-            foreach (var info in QueueingCalculator.Types)
+            // Меню и выпадающий список строятся из каталога типов СМО
+            foreach (var info in SmoCatalog.Types)
             {
                 TypeCombo.Items.Add(info);
 
@@ -38,7 +39,7 @@ namespace CMO_Kalkylator
                 TypeMenuRoot.Items.Add(item);
                 _menuItems.Add(item);
             }
-            TypeCombo.SelectedIndex = 3;   // по умолчанию — многоканальная с неограниченной очередью
+            TypeCombo.SelectedIndex = 0;
             UpdateConvertedText();
         }
 
@@ -65,6 +66,8 @@ namespace CMO_Kalkylator
 
             ResultsGrid.ItemsSource = null;
             StatesGrid.ItemsSource = null;
+            _last = null;
+            ExportButton.IsEnabled = false;
             WarningBorder.Visibility = Visibility.Collapsed;
         }
 
@@ -148,6 +151,19 @@ namespace CMO_Kalkylator
                 $"μ = {mu.ToString("0.#####", Ru)} 1/{u}" +
                 (info.ShowPatience ? $",  ν = {nu.ToString("0.#####", Ru)} 1/{u}" : "");
 
+            _last = new ExportData
+            {
+                Info = info,
+                Lambda = lambda,
+                Mu = mu,
+                Channels = n,
+                QueueLimit = m,
+                Nu = nu,
+                Unit = u,
+                Result = result
+            };
+            ExportButton.IsEnabled = true;
+
             ResultsGrid.ItemsSource = result.Rows;
             StatesGrid.ItemsSource = result.States;
 
@@ -159,6 +175,30 @@ namespace CMO_Kalkylator
             else
             {
                 WarningBorder.Visibility = Visibility.Collapsed;
+            }
+        }
+
+        private void Export_Click(object sender, RoutedEventArgs e)
+        {
+            if (_last == null) return;
+
+            var dialog = new SaveFileDialog
+            {
+                Filter = "Книга Excel (*.xlsx)|*.xlsx",
+                FileName = "Результаты СМО.xlsx"
+            };
+            if (dialog.ShowDialog() != true) return;
+
+            try
+            {
+                ExcelExporter.Export(dialog.FileName, _last);
+                MessageBox.Show("Результаты сохранены:\n" + dialog.FileName, "Экспорт в Excel",
+                    MessageBoxButton.OK, MessageBoxImage.Information);
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("Не удалось сохранить файл (возможно, он открыт в Excel):\n" + ex.Message,
+                    "Ошибка экспорта", MessageBoxButton.OK, MessageBoxImage.Error);
             }
         }
 

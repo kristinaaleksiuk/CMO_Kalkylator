@@ -20,21 +20,11 @@ namespace CMO_Kalkylator
         MultiImpatient      // многоканальная с ограниченным временем ожидания («нетерпеливые» заявки)
     }
 
-    public class SmoTypeInfo
-    {
-        public SmoType Type { get; set; }
-        public string Title { get; set; }
-        public string Description { get; set; }
-        public bool ShowChannels { get; set; }   // ввод числа каналов n
-        public bool ShowQueueLimit { get; set; } // ввод длины очереди m
-        public bool ShowPatience { get; set; }   // ввод времени ожидания / интенсивности ухода
-        public override string ToString() => Title;
-    }
-
     public class ResultRow
     {
         public string Name { get; set; }
         public string Value { get; set; }
+        public double Number { get; set; }
         public string Formula { get; set; }
     }
 
@@ -42,6 +32,7 @@ namespace CMO_Kalkylator
     {
         public string State { get; set; }
         public string Probability { get; set; }
+        public double Number { get; set; } = double.NaN;
     }
 
     public class CalcResult
@@ -55,66 +46,6 @@ namespace CMO_Kalkylator
     {
         private static readonly CultureInfo Ru = new CultureInfo("ru-RU");
         private const int MaxStatesShown = 30;
-
-        public static readonly SmoTypeInfo[] Types =
-        {
-            new SmoTypeInfo
-            {
-                Type = SmoType.SingleRefusal,
-                Title = "Одноканальная СМО с отказами",
-                Description = "Один канал, мест в очереди нет. Заявка, заставшая канал занятым, получает отказ."
-            },
-            new SmoTypeInfo
-            {
-                Type = SmoType.MultiRefusal,
-                Title = "Многоканальная СМО с отказами (задача Эрланга)",
-                Description = "n каналов, очереди нет. Заявка, заставшая все каналы занятыми, покидает систему.",
-                ShowChannels = true
-            },
-            new SmoTypeInfo
-            {
-                Type = SmoType.SingleUnlimited,
-                Title = "Одноканальная СМО с неограниченной очередью",
-                Description = "Один канал, очередь не ограничена. Стационарный режим существует при ρ = λ/μ < 1."
-            },
-            new SmoTypeInfo
-            {
-                Type = SmoType.MultiUnlimited,
-                Title = "Многоканальная СМО с неограниченной очередью",
-                Description = "n каналов, очередь не ограничена. Стационарный режим существует при ρ/n < 1.",
-                ShowChannels = true
-            },
-            new SmoTypeInfo
-            {
-                Type = SmoType.SingleLimited,
-                Title = "Одноканальная СМО с ограниченной очередью",
-                Description = "Один канал, в очереди не более m заявок. При заполненной очереди заявка получает отказ.",
-                ShowQueueLimit = true
-            },
-            new SmoTypeInfo
-            {
-                Type = SmoType.MultiLimited,
-                Title = "Многоканальная СМО с ограниченной очередью",
-                Description = "n каналов, в очереди не более m заявок. При заполненной очереди заявка получает отказ.",
-                ShowChannels = true,
-                ShowQueueLimit = true
-            },
-            new SmoTypeInfo
-            {
-                Type = SmoType.SingleFixedService,
-                Title = "Одноканальная СМО с фиксированным временем обслуживания",
-                Description = "Один канал, очередь не ограничена, время обслуживания постоянно и равно 1/μ (система M/D/1). Нужно ρ < 1."
-            },
-            new SmoTypeInfo
-            {
-                Type = SmoType.MultiImpatient,
-                Title = "СМО с ограниченным временем ожидания («нетерпеливые» заявки)",
-                Description = "n каналов, очередь не ограничена по длине, но заявка уходит, если ждёт дольше случайного времени " +
-                              "(показательное распределение с интенсивностью ухода ν = 1/t_ож).",
-                ShowChannels = true,
-                ShowPatience = true
-            }
-        };
 
         // ----------------------------------------------------------------------------------
         public static CalcResult Calculate(SmoType type, double lambda, double mu, int n, int m, double nu, string unit)
@@ -202,6 +133,7 @@ namespace CMO_Kalkylator
             Add(r, "Коэффициент загрузки каналов", busy / n, "k̄ / n");
             AddStates(r, p);
         }
+
 
         // --------------------------- СМО с неограниченной очередью --------------------------
         private static void Unlimited(CalcResult r, double lambda, double mu, int n, string u)
