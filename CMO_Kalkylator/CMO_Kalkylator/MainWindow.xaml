@@ -7,30 +7,32 @@
         mc:Ignorable="d"
               Title="Анализ систем массового обслуживания"
         Height="720" Width="1100" MinHeight="600" MinWidth="900"
-        WindowStartupLocation="CenterScreen">
-    <DockPanel>
+        WindowStartupLocation="CenterScreen" Background="#FFE9E5E5">
+    <DockPanel Background="#FFF5DFFF">
 
         <!-- Меню выбора типа СМО (пункты создаются в коде) -->
-        <Menu x:Name="TypeMenu" DockPanel.Dock="Top" FontSize="13">
+        <Menu x:Name="TypeMenu" DockPanel.Dock="Top" FontSize="13" Background="#FFFFD1D1">
             <MenuItem x:Name="TypeMenuRoot" Header="_Тип СМО"/>
             <MenuItem Header="_Справка">
                 <MenuItem Header="О программе" Click="About_Click"/>
             </MenuItem>
         </Menu>
 
-        <Grid Margin="12">
+        <Grid Margin="12" Background="#FFDFCEFA">
             <Grid.ColumnDefinitions>
-                <ColumnDefinition Width="400"/>
+                <ColumnDefinition Width="205.517"/>
+                <ColumnDefinition Width="53.67"/>
+                <ColumnDefinition Width="140.813"/>
                 <ColumnDefinition Width="12"/>
                 <ColumnDefinition Width="*"/>
             </Grid.ColumnDefinitions>
 
             <!-- ========== Левая панель: тип и исходные данные ========== -->
-            <StackPanel Grid.Column="0">
+            <StackPanel Grid.Column="0" Grid.ColumnSpan="3">
 
                 <GroupBox Header="1. Тип СМО" Padding="8">
                     <StackPanel>
-                        <ComboBox x:Name="TypeCombo" SelectionChanged="TypeCombo_SelectionChanged"/>
+                        <ComboBox x:Name="TypeCombo" SelectionChanged="TypeCombo_SelectionChanged" Background="#FF655B5B"/>
                         <TextBlock x:Name="DescriptionText" TextWrapping="Wrap" Margin="0,8,0,0"
                                    Foreground="#FF555555"/>
                     </StackPanel>
@@ -46,7 +48,7 @@
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="Единица времени:" VerticalAlignment="Center" Margin="0,0,8,0"/>
                             <TextBox x:Name="UnitBox" Grid.Column="1" Text="ч"
-                                     ToolTip="Например: ч, мин, с. Используется только в подписях."/>
+                                     ToolTip="Например: ч, мин, с. Используется только в подписях." Background="#FFFDE0E0"/>
                         </Grid>
 
                         <TextBlock Text="Входной поток заявок" FontWeight="SemiBold"/>
@@ -60,7 +62,7 @@
                                 <ComboBoxItem Content="Интенсивность λ (заявок в ед. времени)"/>
                                 <ComboBoxItem Content="Среднее время между заявками"/>
                             </ComboBox>
-                            <TextBox x:Name="LambdaBox" Grid.Column="1" Text="10"/>
+                            <TextBox x:Name="LambdaBox" Grid.Column="1" Text="10" Background="#FFFDE0E0"/>
                         </Grid>
 
                         <TextBlock Text="Поток обслуживания" FontWeight="SemiBold"/>
@@ -71,10 +73,16 @@
                             </Grid.ColumnDefinitions>
                             <ComboBox x:Name="MuMode" SelectedIndex="0" Margin="0,0,6,0"
                                       SelectionChanged="Mode_Changed">
+                                <ComboBox.Background>
+                                    <LinearGradientBrush EndPoint="0,1">
+                                        <GradientStop Color="#FFF0F0F0"/>
+                                        <GradientStop Color="#FFE5E5E5" Offset="1"/>
+                                    </LinearGradientBrush>
+                                </ComboBox.Background>
                                 <ComboBoxItem Content="Интенсивность μ (обслуживаний в ед. времени)"/>
                                 <ComboBoxItem Content="Среднее время обслуживания"/>
                             </ComboBox>
-                            <TextBox x:Name="MuBox" Grid.Column="1" Text="15"/>
+                            <TextBox x:Name="MuBox" Grid.Column="1" Text="15" Background="#FFFFDEDE"/>
                         </Grid>
 
                         <Grid x:Name="ChannelsPanel" Margin="0,0,0,8">
@@ -83,7 +91,7 @@
                                 <ColumnDefinition Width="110"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="Число каналов n" VerticalAlignment="Center"/>
-                            <TextBox x:Name="ChannelsBox" Grid.Column="1" Text="2"/>
+                            <TextBox x:Name="ChannelsBox" Grid.Column="1" Text="2" Background="#FFFFDFDF"/>
                         </Grid>
 
                         <Grid x:Name="QueuePanel" Margin="0,0,0,8">
@@ -92,7 +100,7 @@
                                 <ColumnDefinition Width="110"/>
                             </Grid.ColumnDefinitions>
                             <TextBlock Text="Максимум мест в очереди m" VerticalAlignment="Center"/>
-                            <TextBox x:Name="QueueBox" Grid.Column="1" Text="3"/>
+                            <TextBox x:Name="QueueBox" Grid.Column="1" Text="3" Background="#FFFFDEDE"/>
                         </Grid>
 
                         <StackPanel x:Name="PatiencePanel" Margin="0,0,0,8">
@@ -103,15 +111,21 @@
                                     <ColumnDefinition Width="110"/>
                                 </Grid.ColumnDefinitions>
                                 <ComboBox x:Name="NuMode" SelectedIndex="0" Margin="0,0,6,0">
+                                    <ComboBox.Background>
+                                        <LinearGradientBrush EndPoint="0,1">
+                                            <GradientStop Color="#FFF0F0F0"/>
+                                            <GradientStop Color="#FFD9B3B3" Offset="1"/>
+                                        </LinearGradientBrush>
+                                    </ComboBox.Background>
                                     <ComboBoxItem Content="Среднее время ожидания в очереди"/>
                                     <ComboBoxItem Content="Интенсивность ухода ν"/>
                                 </ComboBox>
-                                <TextBox x:Name="NuBox" Grid.Column="1" Text="0.1"/>
+                                <TextBox x:Name="NuBox" Grid.Column="1" Text="0.1" Background="#FFFFD9D9"/>
                             </Grid>
                         </StackPanel>
 
                         <Button Content="Рассчитать" Height="34" Margin="0,8,0,0" FontWeight="SemiBold"
-                                IsDefault="True" Click="Calculate_Click"/>
+                                IsDefault="True" Click="Calculate_Click" Background="#FFF6AEAE"/>
                     </StackPanel>
                 </GroupBox>
 
@@ -119,7 +133,7 @@
             </StackPanel>
 
             <!-- ========== Правая панель: результаты ========== -->
-            <Grid Grid.Column="2">
+            <Grid Grid.Column="4">
                 <Grid.RowDefinitions>
                     <RowDefinition Height="Auto"/>
                     <RowDefinition Height="2*"/>
@@ -136,7 +150,7 @@
                     <DataGrid x:Name="ResultsGrid" AutoGenerateColumns="False" IsReadOnly="True"
                               HeadersVisibility="Column" GridLinesVisibility="Horizontal"
                               CanUserAddRows="False" CanUserSortColumns="False"
-                              RowHeight="26" AlternatingRowBackground="#FFF5F7FA">
+                              RowHeight="26" AlternatingRowBackground="#FFF5F7FA" Background="#FFFDE0E0">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Характеристика" Binding="{Binding Name}" Width="2.2*"/>
                             <DataGridTextColumn Header="Значение" Binding="{Binding Value}" Width="90">
@@ -155,7 +169,7 @@
                 <GroupBox Grid.Row="3" Header="Предельные вероятности состояний" Padding="4">
                     <DataGrid x:Name="StatesGrid" AutoGenerateColumns="False" IsReadOnly="True"
                               HeadersVisibility="Column" GridLinesVisibility="Horizontal"
-                              CanUserAddRows="False" RowHeight="24">
+                              CanUserAddRows="False" RowHeight="24" Background="#FFF9E4E4">
                         <DataGrid.Columns>
                             <DataGridTextColumn Header="Состояние" Binding="{Binding State}" Width="120"/>
                             <DataGridTextColumn Header="Вероятность p" Binding="{Binding Probability}" Width="*"/>

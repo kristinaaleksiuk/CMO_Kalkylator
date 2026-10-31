@@ -4,6 +4,12 @@
              xmlns:local="clr-namespace:CMO_Kalkylator"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+        <Style TargetType="TextBox">
+            <Setter Property="Padding" Value="4,3"/>
+            <Setter Property="VerticalContentAlignment" Value="Center"/>
+        </Style>
+        <Style TargetType="ComboBox">
+            <Setter Property="Padding" Value="4,3"/>
+        </Style>
     </Application.Resources>
 </Application>
